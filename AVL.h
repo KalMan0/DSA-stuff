@@ -5,8 +5,7 @@ fndef AVL_H
 
 enum Traversal {INORDER,PREORDER,POSTORDER};
 
-template<typename T>
-struct Node {
+template<typename T> struct Node {
 
     T data;
 
@@ -16,8 +15,7 @@ struct Node {
     int height;
 };
 
-template <typename T>
-    class AVL {
+template <typename T> class AVL {
 
     private:
 
@@ -151,7 +149,7 @@ template <typename T> Node<T>* AVL<T>::minvalueBF(Node<T>* root)
     while (current->left != nullptr)
     {
         current = current->left; 
-    } // traverse left side of tree till min val 
+    }
     return current; 
 }
 
@@ -225,8 +223,6 @@ template <typename T> void AVL<T>::Destroy(Node<T>* root) //destroys the tree
     delete root;
 }
 
-
-
 template <typename T> void AVL<T>::in_order(Node<T>* root)
 {
     if (root != nullptr)
@@ -268,7 +264,6 @@ template <typename T>  Node<T>* AVL<T>::NewNode(const T& data)
 
     return nn;
 }
-
 
 template <typename T> void AVL<T>::output(enum Traversal x)
 {
