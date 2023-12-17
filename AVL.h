@@ -1,8 +1,7 @@
-#ifndef AVL_H
+fndef AVL_H
 #define AVL_H 
 
 #include <iostream>
-
 
 enum Traversal {INORDER,PREORDER,POSTORDER};
 
@@ -98,53 +97,52 @@ template <typename T> Node<T>* AVL<T>::BalanceNode(Node<T>* root, const T& Data)
     return root; 
 }
 
-template <typename T>  Node<T>* AVL<T>::Remove(Node<T>* root, const T& Data)
+template <typename T>
+Node<T>* AVL<T>::Remove(Node<T>* root, const T& Data)
 {
-    if (root == nullptr) return root; 
+    if (root == nullptr) return root;
 
     if (Data < root->data)
     {
-        root->left = Remove(root->left, Data); 
+        root->left = Remove(root->left, Data);
     }
     else if (Data > root->data)
     {
-        root->right = Remove(root->right, Data); 
+        root->right = Remove(root->right, Data);
     }
-
     else
     {
         if (root->left == nullptr || root->right == nullptr)
         {
-            Node<T>* tmp = root->left ? root->left : root->right;  
+            Node<T>* tmp = root->left ? root->left : root->right;
 
             if (tmp == nullptr)
             {
-                tmp = root; 
-                root = nullptr; 
+                tmp = root;
+                root = nullptr;
             }
             else
             {
-                *root = *tmp; 
-
-                delete tmp; 
+                *root = *tmp;
+                delete tmp;
             }
         }
         else
         {
-            Node<T>* tmp = minvalueBF(root->right); 
-
+            Node<T>* tmp = minvalueBF(root->right);
             root->data = tmp->data;
-            root->right = Remove(root->right, tmp->data); 
+            root->right = Remove(root->right, tmp->data);
         }
-
     }
-    // IT WORKSSS
-    if (root == nullptr) return root; 
 
-    root = BalanceNode(root, Data); 
+    // Balance the node after removal
+    if (root != nullptr)
+        root = BalanceNode(root, Data);
 
-    return root; 
+    return root;
 }
+
+
 
 template <typename T> Node<T>* AVL<T>::minvalueBF(Node<T>* root)
 {
