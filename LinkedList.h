@@ -41,60 +41,54 @@ class LinkedListIterator {
 template<typename T>
 class LinkedList {
 
-
     private:
+
         node<T>* head;
         int size;
 
         void      dstryLst  ();
         size_t    get_size  () const;
+        node<T>*  new_node  (const T&); 
 
     public:
 
         LinkedList             ();
         virtual ~LinkedList    ();
 
-        void    append      (T data);
+        void                append      (const T&);
+        void                remove      (const T&); 
 
 
-        LinkedListIterator<T> begin() const; 
-        LinkedListIterator<T> end() const; 
+        LinkedListIterator<T> begin     () const; 
+        LinkedListIterator<T> end       ()   const; 
 };
 
-template<class T>
-LinkedList<T>::LinkedList()
+template<class T> LinkedList<T>::LinkedList()
 {
 
 }
 
-template<class T>
-LinkedList<T>::~LinkedList()
+template<class T> LinkedList<T>::~LinkedList()
 {
     dstryLst(); delete this->head; 
 }
 
-template<class T>
-LinkedListIterator<T> LinkedList<T>::begin() const 
+template<class T> LinkedListIterator<T> LinkedList<T>::begin() const 
 {
     return LinkedListIterator<T>(head);
 }
 
 
-template<class T>
-LinkedListIterator<T> LinkedList<T>::end() const 
+template<class T> LinkedListIterator<T> LinkedList<T>::end() const 
 {
     return LinkedListIterator<T>(nullptr);
 }
 
-template<class T>
-void LinkedList<T>::append(T data)
+template<class T> void LinkedList<T>::append(const T& data)
 {
     if (this->head == nullptr)
     {
-        this->head = new node<T>; 
-        head->data = data; 
-        head->next = nullptr; 
-
+        this->head = new_node(data); 
         size++; 
         return;
     }
@@ -106,17 +100,20 @@ void LinkedList<T>::append(T data)
         tmp = tmp->next;
     }
 
-    tmp->next = new node<T>; 
-    tmp->next->data = data; 
-    tmp->next->next = nullptr; 
-
+    tmp->next = new_node(data); 
     size++; 
 }
 
+template<typename T> node<T>* LinkedList<T>::new_node(const T& data)
+{
+    node<T>* newnode = new node<T>; 
+    newnode->data = data; 
+    newnode->next = nullptr; 
 
+    return newnode; 
+}
 
-template<typename T>
-void LinkedList<T>::dstryLst()
+template<typename T> void LinkedList<T>::dstryLst()
 {
     node<T>* tmp = head->next;
 
@@ -128,11 +125,40 @@ void LinkedList<T>::dstryLst()
     head->next = nullptr;
 }
 
+template<typename T> void LinkedList<T>::remove(const T& value) 
+{ 
+    if (head == nullptr) 
+        return;
+    
 
-template<typename T>
-size_t LinkedList<T>::get_size() const
+    if (head->data == value) 
+    {
+        node<T>* temp = head;
+        head = head->next;
+        delete temp;
+        size--;
+        return;
+    }
+
+    node<T>* current = head;
+    while (current->next != nullptr && current->next->data != value) 
+    {
+        current = current->next;
+    }
+
+    if (current->next != nullptr) 
+    {
+        node<T>* temp = current->next;
+        current->next = current->next->next;
+        delete temp;
+        size--;
+    }
+}
+
+template<typename T> size_t LinkedList<T>::get_size() const
 {
     return this->size;
 }
 
 #endif
+
