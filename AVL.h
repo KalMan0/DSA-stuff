@@ -43,17 +43,14 @@ public:
     //void         Delete_Node(); 
 };
 
-template <typename T>
-AVL<T>::AVL() {}
+template <typename T> AVL<T>::AVL() {}
 
-template <typename T>
-AVL<T>::~AVL()
+template <typename T> AVL<T>::~AVL()
 {
     Destroy(Head);
 }
 
-template <typename T>
-Node<T>* AVL<T>::RightRotate(Node<T>* root)
+template <typename T> Node<T>* AVL<T>::RightRotate(Node<T>* root)
 {
     Node<T>* newHead = root->left;
     Node<T>* nhtemp = newHead->right;
@@ -67,8 +64,7 @@ Node<T>* AVL<T>::RightRotate(Node<T>* root)
     return newHead;
 }
 
-template <typename T>
-Node<T>* AVL<T>::LeftRotate(Node<T>* root)
+template <typename T> Node<T>* AVL<T>::LeftRotate(Node<T>* root)
 {
     Node<T>* newHead = root->right;
     Node<T>* nhtemp = newHead->left;
@@ -82,8 +78,7 @@ Node<T>* AVL<T>::LeftRotate(Node<T>* root)
     return newHead;
 }
 
-template <typename T>
-Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
+template <typename T> Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
 {
     if (root == nullptr) return NewNode(Data);
 
@@ -129,8 +124,7 @@ Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
     return root;
 }
 
-template <typename T>
-void AVL<T>::Destroy(Node<T>* root) //destroys the tree 
+template <typename T> void AVL<T>::Destroy(Node<T>* root) //destroys the tree 
 {
     if (root == nullptr) return;
     Destroy(root->left);
@@ -141,8 +135,7 @@ void AVL<T>::Destroy(Node<T>* root) //destroys the tree
 
 
 
-template <typename T>
-void AVL<T>::in_order(Node<T>* root)
+template <typename T> void AVL<T>::in_order(Node<T>* root)
 {
     if (root != nullptr)
     {
@@ -152,8 +145,7 @@ void AVL<T>::in_order(Node<T>* root)
     }
 }
 
-template <typename T>
-void AVL<T>::post_order(Node<T>* root)
+template <typename T> void AVL<T>::post_order(Node<T>* root)
 {
     if (root != nullptr)
     {
@@ -163,8 +155,7 @@ void AVL<T>::post_order(Node<T>* root)
     }
 }
 
-template <typename T>
-void AVL<T>::pre_order(Node<T>* root)
+template <typename T> void AVL<T>::pre_order(Node<T>* root)
 {
     if (root != nullptr)
     {
@@ -174,8 +165,7 @@ void AVL<T>::pre_order(Node<T>* root)
     }
 }
 
-template <typename T> // creates new member of the tree 
-Node<T>* AVL<T>::NewNode(const T& data)
+template <typename T>  Node<T>* AVL<T>::NewNode(const T& data)
 {
     Node<T>* nn = new Node<T>;
 
@@ -188,34 +178,28 @@ Node<T>* AVL<T>::NewNode(const T& data)
 }
 
 
-template <typename T>
-void AVL<T>::output()
+template <typename T> void AVL<T>::output()
 {
     in_order(Head);
 }
 
-template <typename T>
-void AVL<T>::Insert(const T& data)
+template <typename T> void AVL<T>::Insert(const T& data)
 {
     Head = modtree(Head, data);
 }
 
-template <typename T>
-int AVL<T>::max(int x, int y)
+template <typename T> int AVL<T>::max(int x, int y)
 {
-    if (x > y) return x;
-    else       return y;
+    return (x > y) ? x : y;
 }
 
-template <typename T>
-int AVL<T>::height(Node<T>* node)
+template <typename T> int AVL<T>::height(Node<T>* node)
 {
     if (node == nullptr) return 0;
     return node->height;
 }
 
-template <typename T>
-int AVL<T>::get_balance(Node<T>* node)
+template <typename T> int AVL<T>::get_balance(Node<T>* node)
 {
     if (node == nullptr) return 0;
     return height(node->left) - height(node->right);
