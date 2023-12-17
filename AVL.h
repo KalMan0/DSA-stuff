@@ -1,7 +1,10 @@
 #ifndef AVL_H
 #define AVL_H 
 
-#include <iostream> 
+#include <iostream>
+
+
+enum Traversal {INORDER,PREORDER,POSTORDER};
 
 template<typename T>
 struct Node {
@@ -15,32 +18,31 @@ struct Node {
 };
 
 template <typename T>
-class AVL {
+    class AVL {
 
-private:
+    private:
 
-    Node<T>* Head;
+        Node<T>* Head;
 
-    void         in_order(Node<T>*);   // traversal tech
-    void         post_order(Node<T>*);
-    void         pre_order(Node<T>*);
-    void         Destroy(Node<T>*);
-    Node<T>*     RightRotate(Node<T>*); // avl rotations 
-    Node<T>*     LeftRotate(Node<T>*);
-    Node<T>*     NewNode(const T&);  // returns a newly created node 
-    Node<T>*     modtree(Node<T>*, const T&);
-    int          get_balance(Node<T>*);
-    int          height(Node<T>*);
-    int          max(int, int);
+        void         in_order       (Node<T>*);   // traversal tech
+        void         post_order     (Node<T>*);
+        void         pre_order      (Node<T>*);
+        void         Destroy        (Node<T>*);
+        Node<T>*     RightRotate    (Node<T>*); // avl rotations 
+        Node<T>*     LeftRotate     (Node<T>*);
+        Node<T>*     NewNode        (const T&);  // returns a newly created node 
+        Node<T>*     modtree        (Node<T>*, const T&);
+        int          get_balance    (Node<T>*);
+        int          height         (Node<T>*);
+        int          max            (int, int);
 
-public:
+    public:
 
-    AVL();
-    ~AVL();
+        AVL();
+        ~AVL();
 
-    void         Insert(const T&);
-    void         output();
-    //void         Delete_Node(); 
+        void         Insert(const T&);
+        void         output(enum Traversal);
 };
 
 template <typename T> AVL<T>::AVL() {}
@@ -169,18 +171,24 @@ template <typename T>  Node<T>* AVL<T>::NewNode(const T& data)
 {
     Node<T>* nn = new Node<T>;
 
-    nn->right  = nullptr;
-    nn->left   = nullptr;
-    nn->data   = data;
+    nn->right = nullptr;
+    nn->left = nullptr;
+    nn->data = data;
     nn->height = 1;
 
     return nn;
 }
 
 
-template <typename T> void AVL<T>::output()
+template <typename T> void AVL<T>::output(enum Traversal x)
 {
-    in_order(Head);
+    switch (x)
+    {
+        case PREORDER  : pre_order (Head); break;
+        case POSTORDER : post_order(Head); break;
+        case INORDER   : in_order  (Head); break;
+        default: break;
+    }
 }
 
 template <typename T> void AVL<T>::Insert(const T& data)
@@ -204,6 +212,4 @@ template <typename T> int AVL<T>::get_balance(Node<T>* node)
     if (node == nullptr) return 0;
     return height(node->left) - height(node->right);
 }
-
-
 #endif 
