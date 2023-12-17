@@ -19,26 +19,25 @@ private:
 
     Node<T>* Head;
 
-    void         in_order(Node<T>*);   // traversal tech
-    void         post_order(Node<T>*);
-    void         pre_order(Node<T>*);
-    void         Destroy(Node<T>*);
-    Node<T>* RightRotate(Node<T>*); // avl rotations 
-    Node<T>* LeftRotate(Node<T>*);
-    Node<T>* NewNode(const T&);  // returns a newly created node 
-    Node<T>* modtree(Node<T>*, const T&);
-    int          get_balance(Node<T>*);
-    int          height(Node<T>*);
-    int          max(int, int);
+    void         in_order        (Node<T>*);   // traversal tech
+    void         post_order      (Node<T>*);
+    void         pre_order       (Node<T>*);
+    void         Destroy         (Node<T>*);
+    Node<T>*     RightRotate     (Node<T>*); // avl rotations 
+    Node<T>*     LeftRotate      (Node<T>*);
+    Node<T>*     NewNode         (const T&);  // returns a newly created node 
+    Node<T>*     modtree         (Node<T>*, const T&);
+    int          get_balance     (Node<T>*);
+    int          height          (Node<T>*);
+    int          max             (int, int);
 
 public:
 
     AVL();
     ~AVL();
-
     void         Insert(const T&);
     void         output();
-    //void         Delete_Node(); 
+
 };
 
 template <typename T>
