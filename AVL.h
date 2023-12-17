@@ -28,7 +28,7 @@ template <typename T>
         void         post_order     (Node<T>*);
         void         pre_order      (Node<T>*);
         void         Destroy        (Node<T>*);
-        Node<T>*         Remove     (Node<T>*,const T&);
+        Node<T>*     Remove         (Node<T>*,const T&);
         Node<T>*     RightRotate    (Node<T>*); // avl rotations 
         Node<T>*     LeftRotate     (Node<T>*);
         Node<T>*     NewNode        (const T&);  // returns a newly created node 
