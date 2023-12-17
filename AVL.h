@@ -28,6 +28,7 @@ template <typename T>
         void         post_order     (Node<T>*);
         void         pre_order      (Node<T>*);
         void         Destroy        (Node<T>*);
+        Node<T>*         Remove     (Node<T>*,const T&);
         Node<T>*     RightRotate    (Node<T>*); // avl rotations 
         Node<T>*     LeftRotate     (Node<T>*);
         Node<T>*     NewNode        (const T&);  // returns a newly created node 
@@ -36,13 +37,21 @@ template <typename T>
         int          height         (Node<T>*);
         int          max            (int, int);
 
+        Node<T>*    minvalueBF      (Node<T>*); 
+        Node<T>*    maxvalueBF      (Node<T>*);
+        
+ 
     public:
 
         AVL();
         ~AVL();
 
-        void         Insert(const T&);
-        void         output(enum Traversal);
+        void         Insert         (const T&);
+        void         output         (enum Traversal);
+        void         Delete         (const T&);
+        Node<T>* BalanceNode(Node<T>* root, const T& Data);
+        
+        
 };
 
 template <typename T> AVL<T>::AVL() {}
@@ -50,6 +59,114 @@ template <typename T> AVL<T>::AVL() {}
 template <typename T> AVL<T>::~AVL()
 {
     Destroy(Head);
+}
+
+
+template <typename T> void AVL<T>::Delete(const T& data)
+{
+    Head = Remove(Head, data); 
+}
+
+template <typename T> Node<T>* AVL<T>::BalanceNode(Node<T>* root, const T& Data)
+{
+    root->height = 1 + max(height(root->left), height(root->right)); // create balance function ? 
+
+    int balance = get_balance(root);
+
+    if (balance > 1 && Data < root->left->data) // left left rot 
+    {
+        return RightRotate(root);
+    }
+
+    if (balance < -1 && Data > root->right->data) // right right rot 
+    {
+        return LeftRotate(root);
+    }
+
+    if (balance > 1 && Data > root->left->data) // left right rot 
+    {
+        root->left = LeftRotate(root->left);
+        return RightRotate(root);
+    }
+
+    if (balance < -1 && Data < root->right->data) // right left rot
+    {
+        root->right = RightRotate(root->right);  // Fix: Change to root->right instead of root->left
+        return LeftRotate(root);
+    }
+
+    return root; 
+}
+
+template <typename T>  Node<T>* AVL<T>::Remove(Node<T>* root, const T& Data)
+{
+    if (root == nullptr) return root; 
+
+    if (Data < root->data)
+    {
+        root->left = Remove(root->left, Data); 
+    }
+    else if (Data > root->data)
+    {
+        root->right = Remove(root->right, Data); 
+    }
+
+    else
+    {
+        if (root->left == nullptr || root->right == nullptr)
+        {
+            Node<T>* tmp = root->left ? root->left : root->right;  
+
+            if (tmp == nullptr)
+            {
+                tmp = root; 
+                root = nullptr; 
+            }
+            else
+            {
+                *root = *tmp; 
+
+                delete tmp; 
+            }
+        }
+        else
+        {
+            Node<T>* tmp = minvalueBF(root->right); 
+
+            root->data = tmp->data;
+            root->right = Remove(root->right, tmp->data); 
+        }
+
+    }
+    // IT WORKSSS
+    if (root == nullptr) return root; 
+
+    root = BalanceNode(root, Data); 
+
+    return root; 
+}
+
+template <typename T> Node<T>* AVL<T>::minvalueBF(Node<T>* root)
+{
+    Node<T>* current = root; 
+
+    while (current->left != nullptr)
+    {
+        current = current->left; 
+    } // traverse left side of tree till min val 
+    return current; 
+}
+
+template <typename T> Node<T>* AVL<T>::maxvalueBF(Node<T>* root)
+{
+    Node<T>* current = root; 
+
+    while (current->right != nullptr)
+    {
+        current = current->right; 
+    }
+
+    return current; 
 }
 
 template <typename T> Node<T>* AVL<T>::RightRotate(Node<T>* root)
@@ -97,32 +214,7 @@ template <typename T> Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
         return root;
     }
 
-    root->height = 1 + max(height(root->left), height(root->right));
-
-    int balance = get_balance(root);
-
-    if (balance > 1 && Data < root->left->data) // left left rot 
-    {
-        return RightRotate(root);
-    }
-
-    if (balance < -1 && Data > root->right->data) // right right rot 
-    {
-        return LeftRotate(root);
-    }
-
-    if (balance > 1 && Data > root->left->data) // left right rot 
-    {
-        root->left = LeftRotate(root->left);
-        return RightRotate(root);
-    }
-
-    if (balance < -1 && Data < root->right->data) // right left rot
-    {
-        root->right = RightRotate(root->right);  // Fix: Change to root->right instead of root->left
-        return LeftRotate(root);
-    }
-
+    root = BalanceNode(root, Data); 
     return root;
 }
 
