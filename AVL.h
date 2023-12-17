@@ -1,6 +1,8 @@
 #ifndef AVL_H
 #define AVL_H 
 
+#include <iostream> 
+
 template<typename T>
 struct Node {
 
@@ -19,25 +21,26 @@ private:
 
     Node<T>* Head;
 
-    void         in_order        (Node<T>*);   // traversal tech
-    void         post_order      (Node<T>*);
-    void         pre_order       (Node<T>*);
-    void         Destroy         (Node<T>*);
-    Node<T>*     RightRotate     (Node<T>*); // avl rotations 
-    Node<T>*     LeftRotate      (Node<T>*);
-    Node<T>*     NewNode         (const T&);  // returns a newly created node 
-    Node<T>*     modtree         (Node<T>*, const T&);
-    int          get_balance     (Node<T>*);
-    int          height          (Node<T>*);
-    int          max             (int, int);
+    void         in_order(Node<T>*);   // traversal tech
+    void         post_order(Node<T>*);
+    void         pre_order(Node<T>*);
+    void         Destroy(Node<T>*);
+    Node<T>*     RightRotate(Node<T>*); // avl rotations 
+    Node<T>*     LeftRotate(Node<T>*);
+    Node<T>*     NewNode(const T&);  // returns a newly created node 
+    Node<T>*     modtree(Node<T>*, const T&);
+    int          get_balance(Node<T>*);
+    int          height(Node<T>*);
+    int          max(int, int);
 
 public:
 
     AVL();
     ~AVL();
+
     void         Insert(const T&);
     void         output();
-
+    //void         Delete_Node(); 
 };
 
 template <typename T>
@@ -58,8 +61,8 @@ Node<T>* AVL<T>::RightRotate(Node<T>* root)
     newHead->right = root;
     root->left = nhtemp;
 
-    root->height = max(height(root->left), height(root->right)) + 1;
-    newHead->height = max(height(newHead->left), height(newHead->right)) + 1;
+    root->height = 1 + max(height(root->left), height(root->right));
+    newHead->height = 1 + max(height(newHead->left), height(newHead->right));
 
     return newHead;
 }
@@ -67,24 +70,22 @@ Node<T>* AVL<T>::RightRotate(Node<T>* root)
 template <typename T>
 Node<T>* AVL<T>::LeftRotate(Node<T>* root)
 {
+    Node<T>* newHead = root->right;
+    Node<T>* nhtemp = newHead->left;
 
-    Node<T>* newHead = root->left;
-    Node<T>* nhtemp = newHead->right;
+    newHead->left = root;
+    root->right = nhtemp;
 
-    newHead->right = root;
-    root->left = nhtemp;
-
-    root->height = max(height(root->left), height(root->right)) + 1;
-    newHead->height = max(height(newHead->left), height(newHead->right)) + 1;
+    root->height = 1 + max(height(root->left), height(root->right));
+    newHead->height = 1 + max(height(newHead->left), height(newHead->right));
 
     return newHead;
 }
 
-
 template <typename T>
 Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
 {
-    if (root == nullptr) return NewNode(Data);  // if Head ptr is null then create a node 
+    if (root == nullptr) return NewNode(Data);
 
     if (Data < root->data)
     {
@@ -108,7 +109,7 @@ Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
         return RightRotate(root);
     }
 
-    if (balance < -1 && Data  > root->right->data) // right right rot 
+    if (balance < -1 && Data > root->right->data) // right right rot 
     {
         return LeftRotate(root);
     }
@@ -121,7 +122,7 @@ Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
 
     if (balance < -1 && Data < root->right->data) // right left rot
     {
-        root->right = RightRotate(root->left);
+        root->right = RightRotate(root->right);  // Fix: Change to root->right instead of root->left
         return LeftRotate(root);
     }
 
@@ -178,9 +179,9 @@ Node<T>* AVL<T>::NewNode(const T& data)
 {
     Node<T>* nn = new Node<T>;
 
-    nn->right = nullptr;
-    nn->left = nullptr;
-    nn->data = data;
+    nn->right  = nullptr;
+    nn->left   = nullptr;
+    nn->data   = data;
     nn->height = 1;
 
     return nn;
@@ -190,7 +191,7 @@ Node<T>* AVL<T>::NewNode(const T& data)
 template <typename T>
 void AVL<T>::output()
 {
-    pre_order(Head);
+    in_order(Head);
 }
 
 template <typename T>
@@ -219,5 +220,6 @@ int AVL<T>::get_balance(Node<T>* node)
     if (node == nullptr) return 0;
     return height(node->left) - height(node->right);
 }
+
 
 #endif 
