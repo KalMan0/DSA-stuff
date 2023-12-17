@@ -1,0 +1,224 @@
+#ifndef AVL_H
+#define AVL_H 
+
+template<typename T>
+struct Node {
+
+    T data;
+
+    Node* right;
+    Node* left;
+
+    int height;
+};
+
+template <typename T>
+class AVL {
+
+private:
+
+    Node<T>* Head;
+
+    void         in_order(Node<T>*);   // traversal tech
+    void         post_order(Node<T>*);
+    void         pre_order(Node<T>*);
+    void         Destroy(Node<T>*);
+    Node<T>* RightRotate(Node<T>*); // avl rotations 
+    Node<T>* LeftRotate(Node<T>*);
+    Node<T>* NewNode(const T&);  // returns a newly created node 
+    Node<T>* modtree(Node<T>*, const T&);
+    int          get_balance(Node<T>*);
+    int          height(Node<T>*);
+    int          max(int, int);
+
+public:
+
+    AVL();
+    ~AVL();
+
+    void         Insert(const T&);
+    void         output();
+    //void         Delete_Node(); 
+};
+
+template <typename T>
+AVL<T>::AVL() {}
+
+template <typename T>
+AVL<T>::~AVL()
+{
+    Destroy(Head);
+}
+
+template <typename T>
+Node<T>* AVL<T>::RightRotate(Node<T>* root)
+{
+    Node<T>* newHead = root->left;
+    Node<T>* nhtemp = newHead->right;
+
+    newHead->right = root;
+    root->left = nhtemp;
+
+    root->height = max(height(root->left), height(root->right)) + 1;
+    newHead->height = max(height(newHead->left), height(newHead->right)) + 1;
+
+    return newHead;
+}
+
+template <typename T>
+Node<T>* AVL<T>::LeftRotate(Node<T>* root)
+{
+
+    Node<T>* newHead = root->left;
+    Node<T>* nhtemp = newHead->right;
+
+    newHead->right = root;
+    root->left = nhtemp;
+
+    root->height = max(height(root->left), height(root->right)) + 1;
+    newHead->height = max(height(newHead->left), height(newHead->right)) + 1;
+
+    return newHead;
+}
+
+
+template <typename T>
+Node<T>* AVL<T>::modtree(Node<T>* root, const T& Data)
+{
+    if (root == nullptr) return NewNode(Data);  // if Head ptr is null then create a node 
+
+    if (Data < root->data)
+    {
+        root->left = modtree(root->left, Data);
+    }
+    else if (Data > root->data)
+    {
+        root->right = modtree(root->right, Data);
+    }
+    else
+    {
+        return root;
+    }
+
+    root->height = 1 + max(height(root->left), height(root->right));
+
+    int balance = get_balance(root);
+
+    if (balance > 1 && Data < root->left->data) // left left rot 
+    {
+        return RightRotate(root);
+    }
+
+    if (balance < -1 && Data  > root->right->data) // right right rot 
+    {
+        return LeftRotate(root);
+    }
+
+    if (balance > 1 && Data > root->left->data) // left right rot 
+    {
+        root->left = LeftRotate(root->left);
+        return RightRotate(root);
+    }
+
+    if (balance < -1 && Data < root->right->data) // right left rot
+    {
+        root->right = RightRotate(root->left);
+        return LeftRotate(root);
+    }
+
+    return root;
+}
+
+template <typename T>
+void AVL<T>::Destroy(Node<T>* root) //destroys the tree 
+{
+    if (root == nullptr) return;
+    Destroy(root->left);
+    Destroy(root->right);
+
+    delete root;
+}
+
+
+
+template <typename T>
+void AVL<T>::in_order(Node<T>* root)
+{
+    if (root != nullptr)
+    {
+        in_order(root->left);
+        std::cout << root->data << std::endl;
+        in_order(root->right);
+    }
+}
+
+template <typename T>
+void AVL<T>::post_order(Node<T>* root)
+{
+    if (root != nullptr)
+    {
+        post_order(root->left);
+        post_order(root->right);
+        std::cout << root->data << std::endl;
+    }
+}
+
+template <typename T>
+void AVL<T>::pre_order(Node<T>* root)
+{
+    if (root != nullptr)
+    {
+        std::cout << root->data << std::endl;
+        pre_order(root->left);
+        pre_order(root->right);
+    }
+}
+
+template <typename T> // creates new member of the tree 
+Node<T>* AVL<T>::NewNode(const T& data)
+{
+    Node<T>* nn = new Node<T>;
+
+    nn->right = nullptr;
+    nn->left = nullptr;
+    nn->data = data;
+    nn->height = 1;
+
+    return nn;
+}
+
+
+template <typename T>
+void AVL<T>::output()
+{
+    pre_order(Head);
+}
+
+template <typename T>
+void AVL<T>::Insert(const T& data)
+{
+    Head = modtree(Head, data);
+}
+
+template <typename T>
+int AVL<T>::max(int x, int y)
+{
+    if (x > y) return x;
+    else       return y;
+}
+
+template <typename T>
+int AVL<T>::height(Node<T>* node)
+{
+    if (node == nullptr) return 0;
+    return node->height;
+}
+
+template <typename T>
+int AVL<T>::get_balance(Node<T>* node)
+{
+    if (node == nullptr) return 0;
+    return height(node->left) - height(node->right);
+}
+
+#endif 
